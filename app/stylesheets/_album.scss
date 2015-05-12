@@ -4,8 +4,10 @@ $color-album: #d2287b;
 
 
 // Mixins
-@mixin line-height($height) {
-  line-height: $height;
+@mixin album-header-infos($line-height, $font-size, $font-weight) {
+  line-height: $line-height;
+  font-size: $font-size;
+  font-weight: $font-weight;
 }
 
 
@@ -19,21 +21,15 @@ $color-album: #d2287b;
   margin-bottom: 20px;
 
   h3 {
-    @include line-height($ligne-height-header-info);
-    font-size: 48px;
-    font-weight: 300;
+    @include album-header-infos($ligne-height-header-info, 48px, 300);
   }
 
   h4 {
-    @include line-height($ligne-height-header-info);
-    font-size: 24px;
-    font-weight: 700;
+    @include album-header-infos($ligne-height-header-info, 24px, 700);
   }
 
   h5 {
-    @include line-height($ligne-height-header-info);
-    font-size: 16px;
-    font-weight: 500;
+    @include album-header-infos($ligne-height-header-info, 16px, 500);
   }
 }
 

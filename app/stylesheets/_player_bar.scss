@@ -1,6 +1,12 @@
 // Variables
 $color-white-transparent: rgba(255, 255, 255, 0.3);
+$controls-width: 25%;
 
+// Mixins
+@mixin controls-width-align($width, $align) {
+  width: $width;
+  text-align: $align;
+}
 
 
 .player-bar {
@@ -25,13 +31,11 @@ $color-white-transparent: rgba(255, 255, 255, 0.3);
   }
 
   .left-controls {
-    width: 25%;
-    text-align: left;
+    @include controls-width-align($controls-width, left);
   }
 
   .right-controls {
-    width: 25%;
-    text-align: right;
+    @include controls-width-align($controls-width, right);
   }
 
   .play-controls {
