@@ -1,0 +1,82 @@
+// Variables
+$ligne-height-header-info: 150%;
+$color-album: #d2287b;
+
+
+// Mixins
+@mixin line-height($height) {
+  line-height: $height;
+}
+
+
+.album-header-container {
+  margin-top: 55px;
+  margin-bottom: 40px;
+}
+
+.album-header-information {
+  margin-top: 45px;
+  margin-bottom: 20px;
+
+  h3 {
+    @include line-height($ligne-height-header-info);
+    font-size: 48px;
+    font-weight: 300;
+  }
+
+  h4 {
+    @include line-height($ligne-height-header-info);
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  h5 {
+    @include line-height($ligne-height-header-info);
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.table.album-song-listing {
+  font-weight: 300;
+
+  td {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, .4);
+  }
+}
+
+.album-song-listing td {
+  vertical-align: center;
+}
+
+td.song-number {
+  padding: 0;
+  height: 70px;
+  text-align: center;
+}
+
+.album-song-button {
+  text-align: center;
+  font-size: 14px;
+  background-color: white;
+  color: $color-album;
+  border-radius: 50% 50%;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+
+  i {
+    line-height: 28px;
+  }
+
+  .fa-play {
+    padding-left: 5px;
+  }
+}
+
+.album-song-button:hover {
+  cursor: pointer;
+  color: white;
+  background-color: $color-album;
+}
