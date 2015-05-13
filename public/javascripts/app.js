@@ -193,7 +193,51 @@ var changeAlbumView = function(album) {
     var $newRow = createSongRow(i + 1, songData.name, songData.length);
     $songList.append($newRow);
   }
+};
 
+var updateSeekPercentage = function($seekBar, event) {
+  var barWidth = $seekBar.width();
+  var offsetX = event.pageX - $seekBar.offset().left;
+  var offsetXPercent = (offsetX  / barWidth) * 100;
+  offsetXPercent = Math.max(0, offsetXPercent);
+  offsetXPercent = Math.min(100, offsetXPercent);
+
+  var percentageString = offsetXPercent + '%';
+  $seekBar.find('.fill').width(percentageString);
+  $seekBar.find('.thumb').css({left: percentageString});
+};
+
+var setupSeekBars = function() {
+  $seekBars = $('.player-bar .seek-bar');
+  $seekBars.click(function(event) {
+    updateSeekPercentage($(this), event);
+  });
+  $seekBars.find('.thumb').mousedown(function(event){
+    var $seekBar = $(this).parent();
+    $seekBar.addClass('no-animate');
+    $('.player-bar').bind('mousemove.thumb', function(event){
+      updateSeekPercentage($seekBar, event);
+      console.log('X pos: ' + event.pageX);
+      console.log('Y pos: ' + event.pageY);
+    });
+    $('.album-container').bind('mousemove.thumb', function() {
+      $seekBar.removeClass('no-animate');
+      $('.player-bar').unbind('mousemove.thumb');
+      $('.player-bar').unbind('mouseup.thumb');
+    })
+    $('.player-bar').bind('mouseup.thumb', function(){
+      $seekBar.removeClass('no-animate');
+      $('.player-bar').unbind('mousemove.thumb');
+      $('.player-bar').unbind('mouseup.thumb');
+    });
+  });
+};
+ 
+ var followMouse = function() {
+  $(document).bind('mousemove.thumb', function(event){
+    console.log('X pos: ' + event.pageX);
+    console.log('Y pos: ' + event.pageY);
+ });
 };
 
 if (document.URL.match(/\/album.html/)) {
@@ -204,6 +248,8 @@ if (document.URL.match(/\/album.html/)) {
     } else {
       changeAlbumView(albumMarconi);
     }
+    setupSeekBars();
+    //followMouse();
   });
 }
 });
