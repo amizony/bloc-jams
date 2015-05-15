@@ -3,7 +3,26 @@
 //require("./album");
 //require("./profile");
 
-angular.module('BlocJams', []).controller('Landing.controller', ['$scope', function($scope) {
+blocJams = angular.module('BlocJams', ['ui.router']);
+
+blocJams.config(['$stateProvider', '$locationProvider', function($stateProvider, $locationProvider) {
+   $locationProvider.html5Mode(true);
+ 
+   $stateProvider.state('landing', {
+     url: '/',
+     controller: 'Landing.controller',
+     templateUrl: '/templates/landing.html'
+   });
+
+   $stateProvider.state('song', {
+     url: '/',
+     //controller: 'Landing.controller',
+     templateUrl: '/templates/song.html'
+   });
+ }]);
+
+
+blocJams.controller('Landing.controller', ['$scope', function($scope) {
 
 	function shuffle(o){ //v1.0
 		for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
