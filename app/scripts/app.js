@@ -94,7 +94,7 @@ var albumTSFH = {
 // ------------------------------
 // Controllers
 
-blocJams.controller('Landing.controller', ['$scope', function($scope) {
+blocJams.controller('Landing.controller', ['$scope', 'SayHello', function($scope, SayHello) {
 
 function shuffle(o){ //v1.0
   for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
@@ -116,9 +116,14 @@ $scope.albumURLs = [
 '/images/album-placeholders/album-9.jpg',
 ];
 
-
+$scope.ace = { myString: "",}; // for the SayHello
 $scope.titleClicked = function() {
   shuffle($scope.albumURLs);
+  if ( $scope.ace.myString ) { // for the SayHello
+    SayHello.setstring($scope.ace.myString); // for the SayHello
+    $scope.ace.myString = ""; // for the SayHello
+  } // for the SayHello
+  SayHello.log(); // for the SayHello
 };
 
 $scope.subTextClicked = function() {
@@ -127,7 +132,7 @@ $scope.subTextClicked = function() {
 }]);
 
 
-blocJams.controller('Collection.controller', ['$scope', function($scope) {
+blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', 'SayHello', function($scope, SongPlayer, SayHello) {
   $scope.albums = [];
   for (var i = 0; i < 33; i++) {
     var rand = Math.random();
@@ -139,9 +144,11 @@ blocJams.controller('Collection.controller', ['$scope', function($scope) {
       $scope.albums.push(angular.copy(albumTSFH));
     }
   }
+  console.log('-- Collection --');
+  SayHello.log();
 }]);
 
-blocJams.controller('Album.controller', ['$scope', function($scope) {
+blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SayHello', function($scope, SongPlayer, SayHello) {
   var rand = Math.random();
   if (rand < 0.34) {
     $scope.album = angular.copy(albumPicasso);
@@ -152,7 +159,6 @@ blocJams.controller('Album.controller', ['$scope', function($scope) {
   }
 
   var hoveredSong = null;
-  var playingSong = null;
 
   $scope.onHoverSong = function(song) {
     hoveredSong = song;
@@ -162,7 +168,7 @@ blocJams.controller('Album.controller', ['$scope', function($scope) {
     hoveredSong = null;
   };
   $scope.getSongState = function(song) {
-    if (song === playingSong) {
+    if (song === SongPlayer.currentSong && SongPlayer.playing) {
       return 'playing';
     }
     else if (song === hoveredSong) {
@@ -171,10 +177,59 @@ blocJams.controller('Album.controller', ['$scope', function($scope) {
     return 'default';
   };
   $scope.playSong = function(song) {
-    playingSong = song;
+    SongPlayer.setSong($scope.album, song);
+    SongPlayer.play();
   };
 
   $scope.pauseSong = function(song) {
-    playingSong = null;
+    SongPlayer.pause();
   };
+  console.log('-- Album --');
+  SayHello.log();
 }]);
+
+
+blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', 'SayHello', function($scope, SongPlayer, SayHello) {
+  $scope.songPlayer = SongPlayer;
+  console.log('-- PlayerBar --');
+  SayHello.log();
+}]);
+
+blocJams.service('SongPlayer', function() {
+  return {
+    currentSong: null,
+    currentAlbum: null,
+    playing: false,
+
+    play: function() {
+      if ( this.currentSong ) {
+        this.playing = true;
+      }
+    },
+    pause: function() {
+      this.playing = false;
+    },
+    setSong: function(album, song) {
+      this.currentAlbum = album;
+      this.currentSong = song;
+    }
+  };
+});
+
+blocJams.service('SayHello', function() {
+  return {
+    string: "",
+
+    setstring: function(str) {
+      this.string = str;
+    },
+
+    log: function() {
+      if ( this.string ) {
+        console.log(this.string);
+      } else {
+        console.log('Hello World!');
+      }
+    },
+  };
+});
