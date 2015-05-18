@@ -1,6 +1,7 @@
 // Variables
 $ligne-height-header-info: 150%;
 $color-album: #d2287b;
+$odd-line:#2f1d57;
 
 
 // Mixins
@@ -75,4 +76,8 @@ td.song-number {
   cursor: pointer;
   color: white;
   background-color: $color-album;
+}
+
+.row .odd {
+  background-color: $odd-line;
 }

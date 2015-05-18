@@ -71,6 +71,9 @@ td.song-number {
   color: white;
   background-color: #d2287b; }
 
+.row .odd {
+  background-color: #2f1d57; }
+
 .collection-album-container {
   margin-top: 30px;
   margin-bottom: 20px; }
