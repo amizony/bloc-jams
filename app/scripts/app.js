@@ -196,6 +196,10 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', 'SayHello',
 }]);
 
 blocJams.service('SongPlayer', function() {
+  var trackIndex = function(album, song) {
+    return album.songs.indexOf(song);
+  };
+  
   return {
     currentSong: null,
     currentAlbum: null,
@@ -208,6 +212,28 @@ blocJams.service('SongPlayer', function() {
     },
     pause: function() {
       this.playing = false;
+    },
+    next: function() {
+      if ( this.currentSong ) {
+        var currentTrackIndex = trackIndex(this.currentAlbum, this.currentSong);
+        currentTrackIndex++;
+        if (currentTrackIndex >= this.currentAlbum.songs.length) {
+          this.currentSong = null;
+        } else {
+          this.currentSong = this.currentAlbum.songs[currentTrackIndex];
+        }
+      }
+    },
+    previous: function() {
+      if ( this.currentSong ) {
+        var currentTrackIndex = trackIndex(this.currentAlbum, this.currentSong);
+        currentTrackIndex--;
+        if (currentTrackIndex < 0) {
+          this.currentSong = null;
+        } else { 
+          this.currentSong = this.currentAlbum.songs[currentTrackIndex];
+        }
+      }
     },
     setSong: function(album, song) {
       this.currentAlbum = album;
