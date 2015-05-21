@@ -228,17 +228,22 @@ blocJams.service('SongPlayer', function() {
       this.playing = false;
       currentSoundFile.pause();
     },
+    stop: function () {
+      this.playing = false;
+      currentSoundFile.stop();
+      this.currentSong = null;
+    },
     next: function() {
       if ( this.currentSong ) {
         var currentTrackIndex = trackIndex(this.currentAlbum, this.currentSong);
         currentTrackIndex++;
         if (currentTrackIndex >= this.currentAlbum.songs.length) {
-          this.currentSong = null;
+          this.stop();
         } else {
           this.currentSong = this.currentAlbum.songs[currentTrackIndex];
+          var song = this.currentAlbum.songs[currentTrackIndex];
+          this.setSong(this.currentAlbum, song);
         }
-        var song = this.currentAlbum.songs[currentTrackIndex];
-        this.setSong(this.currentAlbum, song);
       }
     },
     previous: function() {
@@ -246,12 +251,12 @@ blocJams.service('SongPlayer', function() {
         var currentTrackIndex = trackIndex(this.currentAlbum, this.currentSong);
         currentTrackIndex--;
         if (currentTrackIndex < 0) {
-          this.currentSong = null;
+          this.stop();
         } else { 
           this.currentSong = this.currentAlbum.songs[currentTrackIndex];
+          var song = this.currentAlbum.songs[currentTrackIndex];
+          this.setSong(this.currentAlbum, song);
         }
-        var song = this.currentAlbum.songs[currentTrackIndex];
-        this.setSong(this.currentAlbum, song);
       }
     },
     setSong: function(album, song) {
@@ -260,7 +265,6 @@ blocJams.service('SongPlayer', function() {
       }
       this.currentAlbum = album;
       this.currentSong = song;
-      console.log(song);
       currentSoundFile = new buzz.sound(song.audioUrl, {
         formats: [ "mp3" ],
         preload: true
