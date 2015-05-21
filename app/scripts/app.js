@@ -320,3 +320,52 @@ blocJams.directive('slider', function(){
     }
   };
 });
+
+
+blocJams.directive('clickme', function(){
+  return {
+    template: '<div class="click-me"></div>',
+    replace: true,
+    restrict: 'E',
+    link: function() {
+      $('.click-me').on('click', function() {
+         alert("It's gonna explode!");
+       });
+    }
+  };
+});
+
+
+blocJams.directive('countHoverTime', function() {
+  var time = 0.0;
+  var count = function() {
+    time += 0.1;
+  };
+  var intervalID
+  var onhover = function(event) {
+    intervalID = window.setInterval(count, 100);
+  };
+  var offhover = function(event) {
+    window.clearInterval(intervalID);
+    console.log(time + 's');
+    time = 0;
+  };
+
+  return {
+    restrict: 'A',
+    link: function(scope, element, attribute) {
+      $(element).hover(onhover, offhover);
+    }
+  };
+});
+
+
+blocJams.directive('classify', function() {
+  return {
+    restrict: 'ACE',
+    link: function(scope, element, attribute) {
+      var text = $(element).text();
+      $(element).addClass(text);
+    }
+  };
+});

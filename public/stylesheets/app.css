@@ -18,6 +18,16 @@
   .selling-points .point p {
     font-size: 14px; }
 
+.click-me {
+  height: 20px;
+  width: 20px;
+  background-color: red; }
+
+.test {
+  height: 20px;
+  width: 20px;
+  background-color: green; }
+
 .album-header-container {
   margin-top: 55px;
   margin-bottom: 40px; }
