@@ -2,7 +2,6 @@
   <div class='container'>
     <h1 ng-click="titleClicked()"> {{title}} </h1>
     <h3 ng-click="subTextClicked()"> {{subText}} </h3>
-    <a ui-sref="song">Click me!</a>
   </div>
 </div>
 
@@ -29,13 +28,4 @@
       <img ng-src="{{albumURL}}">
     </div>
   </div>
-</div>
-
-<!-- Div for the SayHello -->
-<div>
-  <p>Should I log something in the console?</p>
-  <form name="userForm">
-    <input type="text" ng-model="ace.myString"/>
-  </form>
-  <p>Input = {{ace.myString}} </p>
 </div>

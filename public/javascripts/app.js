@@ -275,12 +275,6 @@ blocJams.config(['$stateProvider', '$locationProvider', function($stateProvider,
     templateUrl: '/templates/landing.html'
   });
 
-  $stateProvider.state('song', {
-    url: '/',
-//controller: 'Landing.controller',
-templateUrl: '/templates/song.html'
-});
-
   $stateProvider.state('collection', {
     url: '/collection',
     controller: 'Collection.controller',
@@ -306,11 +300,11 @@ var albumPicasso = {
   albumArtUrl: '/images/album-placeholder.png',
 
   songs: [
-  { name: 'Blue', length: '4:26' },
-  { name: 'Green', length: '3:14' },
-  { name: 'Red', length: '5:01' },
-  { name: 'Pink', length: '3:21'},
-  { name: 'Magenta', length: '2:15'}
+    { name: 'Blue', length: '4:26', audioUrl: '/music/placeholders/blue' },
+    { name: 'Green', length: '3:14', audioUrl: '/music/placeholders/green' },
+    { name: 'Red', length: '5:01', audioUrl: '/music/placeholders/red' },
+    { name: 'Pink', length: '3:21', audioUrl: '/music/placeholders/pink' },
+    { name: 'Magenta', length: '2:15', audioUrl: '/music/placeholders/magenta' }
   ]
 };
 var albumMarconi = {
@@ -320,11 +314,11 @@ var albumMarconi = {
   year: '1909',
   albumArtUrl: '/images/album-placeholder.png',
   songs: [
-  { name: 'Hello, Operator?', length: '1:01' },
-  { name: 'Ring, ring, ring', length: '5:01' },
-  { name: 'Fits in your pocket', length: '3:21'},
-  { name: 'Can you hear me now?', length: '3:14' },
-  { name: 'Wrong phone number', length: '2:15'}
+  { name: 'Hello, Operator?', length: '4:26', audioUrl: '/music/placeholders/blue' },
+  { name: 'Ring, ring, ring', length: '3:14', audioUrl: '/music/placeholders/green' },
+  { name: 'Fits in your pocket', length: '5:01', audioUrl: '/music/placeholders/red' },
+  { name: 'Can you hear me now?', length: '3:21', audioUrl: '/music/placeholders/pink' },
+  { name: 'Wrong phone number', length: '2:15', audioUrl: '/music/placeholders/magenta' }
   ]
 };
 var albumTSFH = {
@@ -334,16 +328,16 @@ var albumTSFH = {
   year: '2011',
   albumArtUrl: '/images/album-placeholder.png',
   songs: [
-  { name: 'Aura', length: '7:43' },
-  { name: 'Starvation', length: '4:27' },
-  { name: 'Dreammaker', length: '4:18'},
-  { name: 'Hurt', length: '1:43' },
-  { name: 'Ocean Princess', length: '2:53'},
-  { name: 'Gift of Life', length: '3:22'},
-  { name: 'Rada', length: '4:23'},
-  { name: 'A Place In Heaven', length: '4:16'},
-  { name: 'Merchant Prince', length: '2:26'},
-  { name: 'Promise', length: '4:59	'},
+  { name: 'Aura', length: '4:26', audioUrl: '/music/placeholders/blue' },
+  { name: 'Starvation', length: '3:14', audioUrl: '/music/placeholders/green' },
+  { name: 'Dreammaker', length: '5:01', audioUrl: '/music/placeholders/red' },
+  { name: 'Hurt', length: '3:21', audioUrl: '/music/placeholders/pink' },
+  { name: 'Ocean Princess', length: '2:15', audioUrl: '/music/placeholders/magenta' },
+  { name: 'Gift of Life', length: '4:26', audioUrl: '/music/placeholders/blue' },
+  { name: 'Rada', length: '3:14', audioUrl: '/music/placeholders/green' },
+  { name: 'A Place In Heaven', length: '5:01', audioUrl: '/music/placeholders/red' },
+  { name: 'Merchant Prince', length: '3:21', audioUrl: '/music/placeholders/pink' },
+  { name: 'Promise', length: '2:15', audioUrl: '/music/placeholders/magenta' },
   ]
 }
 
@@ -351,7 +345,7 @@ var albumTSFH = {
 // ------------------------------
 // Controllers
 
-blocJams.controller('Landing.controller', ['$scope', 'SayHello', function($scope, SayHello) {
+blocJams.controller('Landing.controller', ['$scope', function($scope) {
 
 function shuffle(o){ //v1.0
   for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
@@ -373,14 +367,8 @@ $scope.albumURLs = [
 '/images/album-placeholders/album-9.jpg',
 ];
 
-$scope.ace = { myString: "",}; // for the SayHello
 $scope.titleClicked = function() {
   shuffle($scope.albumURLs);
-  if ( $scope.ace.myString ) { // for the SayHello
-    SayHello.setstring($scope.ace.myString); // for the SayHello
-    $scope.ace.myString = ""; // for the SayHello
-  } // for the SayHello
-  SayHello.log(); // for the SayHello
 };
 
 $scope.subTextClicked = function() {
@@ -389,7 +377,8 @@ $scope.subTextClicked = function() {
 }]);
 
 
-blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', 'SayHello', function($scope, SongPlayer, SayHello) {
+blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', 'SelectAlbum', function($scope, SongPlayer, SelectAlbum) {
+  $scope.SelectAlbum = SelectAlbum;
   $scope.albums = [];
   for (var i = 0; i < 33; i++) {
     var rand = Math.random();
@@ -400,21 +389,44 @@ blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', 'SayHello'
     } else {
       $scope.albums.push(angular.copy(albumTSFH));
     }
+  };
+
+  $scope.playAlbum = function(album){
+    SongPlayer.setSong(album, album.songs[0]); // Targets first song in the array.
+  };
+
+  $scope.chooseAlbum = function(album) {
+    SelectAlbum.set(album.name);
   }
-  console.log('-- Collection --');
-  SayHello.log();
+
 }]);
 
-blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SayHello', function($scope, SongPlayer, SayHello) {
-  var rand = Math.random();
-  if (rand < 0.34) {
-    $scope.album = angular.copy(albumPicasso);
-  } else if (rand < 0.67) {
-    $scope.album = angular.copy(albumMarconi);
-  } else {
-    $scope.album = angular.copy(albumTSFH);
-  }
+blocJams.service('SelectAlbum', function() {
+  return {
+    album: null,
+    set: function(albumName) {
+      this.album = albumName;
+    }
+  };
+});
 
+blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SelectAlbum', function($scope, SongPlayer, SelectAlbum) {
+  $scope.SelectAlbum = SelectAlbum;
+  console.log(SelectAlbum.album);
+  switch (SelectAlbum.album) {
+    case 'The Colors':
+      $scope.album = angular.copy(albumPicasso);
+      break;
+    case 'The Telephone':
+      $scope.album = angular.copy(albumMarconi);
+      break;
+    case 'Illusions':
+      $scope.album = angular.copy(albumTSFH);
+      break;
+    default:
+      $scope.album = angular.copy(albumPicasso);
+  };
+  SongPlayer.setAlbum($scope.album);
   var hoveredSong = null;
 
   $scope.onHoverSong = function(song) {
@@ -435,24 +447,22 @@ blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SayHello', fun
   };
   $scope.playSong = function(song) {
     SongPlayer.setSong($scope.album, song);
-    SongPlayer.play();
+    //SongPlayer.play();
   };
 
   $scope.pauseSong = function(song) {
     SongPlayer.pause();
   };
-  console.log('-- Album --');
-  SayHello.log();
 }]);
 
 
-blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', 'SayHello', function($scope, SongPlayer, SayHello) {
+blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
   $scope.songPlayer = SongPlayer;
-  console.log('-- PlayerBar --');
-  SayHello.log();
 }]);
 
 blocJams.service('SongPlayer', function() {
+  var currentSoundFile = null;
+
   var trackIndex = function(album, song) {
     return album.songs.indexOf(song);
   };
@@ -463,12 +473,17 @@ blocJams.service('SongPlayer', function() {
     playing: false,
 
     play: function() {
-      if ( this.currentSong ) {
+      if (!this.currentSong && this.currentAlbum) {
+        this.setSong(this.currentAlbum, this.currentAlbum.songs[0]);
+      }
+      if (this.currentSong) {
         this.playing = true;
+        currentSoundFile.play();
       }
     },
     pause: function() {
       this.playing = false;
+      currentSoundFile.pause();
     },
     next: function() {
       if ( this.currentSong ) {
@@ -479,6 +494,8 @@ blocJams.service('SongPlayer', function() {
         } else {
           this.currentSong = this.currentAlbum.songs[currentTrackIndex];
         }
+        var song = this.currentAlbum.songs[currentTrackIndex];
+        this.setSong(this.currentAlbum, song);
       }
     },
     previous: function() {
@@ -490,32 +507,31 @@ blocJams.service('SongPlayer', function() {
         } else { 
           this.currentSong = this.currentAlbum.songs[currentTrackIndex];
         }
+        var song = this.currentAlbum.songs[currentTrackIndex];
+        this.setSong(this.currentAlbum, song);
       }
     },
     setSong: function(album, song) {
+      if (currentSoundFile) {
+        currentSoundFile.stop();
+      }
       this.currentAlbum = album;
       this.currentSong = song;
+      console.log(song);
+      currentSoundFile = new buzz.sound(song.audioUrl, {
+        formats: [ "mp3" ],
+        preload: true
+       });
+      this.play();
+    },
+    setAlbum: function(album) {
+      if (!this.currentAlbum) {
+        this.currentAlbum = album;
+      }
     }
   };
 });
 
-blocJams.service('SayHello', function() {
-  return {
-    string: "",
-
-    setstring: function(str) {
-      this.string = str;
-    },
-
-    log: function() {
-      if ( this.string ) {
-        console.log(this.string);
-      } else {
-        console.log('Hello World!');
-      }
-    },
-  };
-});
 });
 
 ;require.register("scripts/collection", function(exports, require, module) {
