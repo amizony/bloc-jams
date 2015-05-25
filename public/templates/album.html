@@ -32,7 +32,7 @@
             <td ng-if="$first" class="col-md-9"><b> {{ song.name }} </b></td>
             <td ng-if="$last" class="col-md-9"><i> {{ song.name }} </i></td>
             <td ng-if="!$first && !$last" class="col-md-9"> {{ song.name }} </td>
-            <td class="col-md-2"> {{ song.length }} </td>
+            <td class="col-md-2"> {{ song.length | TimeCode }} </td>
           </td>
         </td>
       </tr>

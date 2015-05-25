@@ -43,11 +43,11 @@ var albumPicasso = {
   albumArtUrl: '/images/album-placeholder.png',
 
   songs: [
-    { name: 'Blue', length: 163.38, audioUrl: '/music/placeholders/blue' },
-    { name: 'Green', length: 105.66, audioUrl: '/music/placeholders/green' },
-    { name: 'Red', length: 270.14, audioUrl: '/music/placeholders/red' },
-    { name: 'Pink', length: 154.81, audioUrl: '/music/placeholders/pink' },
-    { name: 'Magenta', length: 375.92, audioUrl: '/music/placeholders/magenta' }
+    { name: 'Blue', length: 161.71, audioUrl: '/music/placeholders/blue' }, // length: 163.38
+    { name: 'Green', length: 103.96, audioUrl: '/music/placeholders/green' }, // length: 105.66
+    { name: 'Red', length: 268.45, audioUrl: '/music/placeholders/red' }, // length: 270.14
+    { name: 'Pink', length: 153.14, audioUrl: '/music/placeholders/pink' }, // length: 154.81
+    { name: 'Magenta', length: 374.22, audioUrl: '/music/placeholders/magenta' } // length: 375.92
   ]
 };
 var albumMarconi = {
@@ -57,11 +57,11 @@ var albumMarconi = {
   year: '1909',
   albumArtUrl: '/images/album-placeholder.png',
   songs: [
-  { name: 'Hello, Operator?', length: 163.38, audioUrl: '/music/placeholders/blue' },
-  { name: 'Ring, ring, ring', length: 105.66, audioUrl: '/music/placeholders/green' },
-  { name: 'Fits in your pocket', length: 270.14, audioUrl: '/music/placeholders/red' },
-  { name: 'Can you hear me now?', length: 154.81, audioUrl: '/music/placeholders/pink' },
-  { name: 'Wrong phone number', length: 375.92, audioUrl: '/music/placeholders/magenta' }
+  { name: 'Hello, Operator?', length: 161.71, audioUrl: '/music/placeholders/blue' },
+  { name: 'Ring, ring, ring', length: 103.96, audioUrl: '/music/placeholders/green' },
+  { name: 'Fits in your pocket', length: 268.45, audioUrl: '/music/placeholders/red' },
+  { name: 'Can you hear me now?', length: 153.14, audioUrl: '/music/placeholders/pink' },
+  { name: 'Wrong phone number', length: 374.22, audioUrl: '/music/placeholders/magenta' }
   ]
 };
 var albumTSFH = {
@@ -71,16 +71,16 @@ var albumTSFH = {
   year: '2011',
   albumArtUrl: '/images/album-placeholder.png',
   songs: [
-  { name: 'Aura', length: 163.38, audioUrl: '/music/placeholders/blue' },
-  { name: 'Starvation', length: 105.66, audioUrl: '/music/placeholders/green' },
-  { name: 'Dreammaker', length: 270.14, audioUrl: '/music/placeholders/red' },
-  { name: 'Hurt', length: 154.81, audioUrl: '/music/placeholders/pink' },
-  { name: 'Ocean Princess', length: 375.92, audioUrl: '/music/placeholders/magenta' },
-  { name: 'Gift of Life', length: 163.38, audioUrl: '/music/placeholders/blue' },
-  { name: 'Rada', length: 105.66, audioUrl: '/music/placeholders/green' },
-  { name: 'A Place In Heaven', length: 270.14, audioUrl: '/music/placeholders/red' },
-  { name: 'Merchant Prince', length: 154.81, audioUrl: '/music/placeholders/pink' },
-  { name: 'Promise', length: 375.92, audioUrl: '/music/placeholders/magenta' },
+  { name: 'Aura', length: 161.71, audioUrl: '/music/placeholders/blue' },
+  { name: 'Starvation', length: 103.96, audioUrl: '/music/placeholders/green' },
+  { name: 'Dreammaker', length: 268.45, audioUrl: '/music/placeholders/red' },
+  { name: 'Hurt', length: 153.14, audioUrl: '/music/placeholders/pink' },
+  { name: 'Ocean Princess', length: 374.22, audioUrl: '/music/placeholders/magenta' },
+  { name: 'Gift of Life', length: 161.71, audioUrl: '/music/placeholders/blue' },
+  { name: 'Rada', length: 103.96, audioUrl: '/music/placeholders/green' },
+  { name: 'A Place In Heaven', length: 268.45, audioUrl: '/music/placeholders/red' },
+  { name: 'Merchant Prince', length: 153.14, audioUrl: '/music/placeholders/pink' },
+  { name: 'Promise', length: 374.22, audioUrl: '/music/placeholders/magenta' },
   ]
 }
 
@@ -200,11 +200,20 @@ blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SelectAlbum', 
 
 blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
   $scope.songPlayer = SongPlayer;
+  //$scope.playTime = TimeCodeFilter(NaN);
+  
+  SongPlayer.onTimeUpdate(function(event, time){
+     $scope.$apply(function(){
+      //var timeFiltred = TimeCodeFilter(time);
+      //$scope.playTime = timeFiltred;
+      $scope.playTime = time;
+     });
+   });
+
 }]);
 
-blocJams.service('SongPlayer', function() {
+blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
   var currentSoundFile = null;
-
   var trackIndex = function(album, song) {
     return album.songs.indexOf(song);
   };
@@ -264,10 +273,16 @@ blocJams.service('SongPlayer', function() {
       }
       this.currentAlbum = album;
       this.currentSong = song;
+
       currentSoundFile = new buzz.sound(song.audioUrl, {
         formats: [ "mp3" ],
         preload: true
-       });
+      });
+
+      currentSoundFile.bind('timeupdate', function(e){
+        $rootScope.$broadcast('sound:timeupdate', this.getTime());
+      });
+
       this.play();
     },
     setAlbum: function(album) {
@@ -279,19 +294,22 @@ blocJams.service('SongPlayer', function() {
       if(currentSoundFile) {
         currentSoundFile.setTime(time);
       }
+    },
+    onTimeUpdate: function(callback) {
+      return $rootScope.$on('sound:timeupdate', callback);
     }
   };
-});
+}]);
 
 
 blocJams.directive('slider', ['$document', function($document){
   var calculateSliderPercentFromMouseEvent = function($slider, event) {
-     var offsetX =  event.pageX - $slider.offset().left; // Distance from left
-     var sliderWidth = $slider.width(); // Width of slider
-     var offsetXPercent = (offsetX  / sliderWidth);
-     offsetXPercent = Math.max(0, offsetXPercent);
-     offsetXPercent = Math.min(1, offsetXPercent);
-     return offsetXPercent;
+    var offsetX =  event.pageX - $slider.offset().left; // Distance from left
+    var sliderWidth = $slider.width(); // Width of slider
+    var offsetXPercent = (offsetX  / sliderWidth);
+    offsetXPercent = Math.max(0, offsetXPercent);
+    offsetXPercent = Math.min(1, offsetXPercent);
+    return offsetXPercent;
   }
 
   var numberFromValue = function(value, defaultValue) {
@@ -369,3 +387,33 @@ blocJams.directive('slider', ['$document', function($document){
     }
   };
 }]);
+
+
+blocJams.filter('TimeCode', function(){
+  return function(seconds) {
+    seconds = Number.parseFloat(seconds);
+
+// Returned when no time is provided.
+    if (Number.isNaN(seconds)) {
+      return '-:--';
+    }
+
+// make it a whole number
+    var wholeSeconds = Math.floor(seconds);
+
+    var minutes = Math.floor(wholeSeconds / 60);
+
+    remainingSeconds = wholeSeconds % 60;
+
+    var output = minutes + ':';
+
+// zero pad seconds, so 9 seconds should be :09
+    if (remainingSeconds < 10) {
+      output += '0';
+    }
+
+    output += remainingSeconds;
+
+    return output;
+  }
+});
