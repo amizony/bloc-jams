@@ -16,7 +16,7 @@
       <h2 class='song-name'> {{ songPlayer.currentSong.name }} </h2>
       <div class='seek-control'>
         <slider value='{{playTime}}' max='{{songPlayer.currentSong.length}}' on-change='songPlayer.seek(niceValue)'></slider>
-        <div class='current-time'> {{ playTime | TimeCode}} </div>
+        <div class='current-time'> {{ playTimeFiltered }} </div>
         <div class='total-time'> {{ songPlayer.currentSong.length | TimeCode }}</div>
       </div>
       <h3 class='artist-name'> {{ songPlayer.currentAlbum.artist }} </h3>

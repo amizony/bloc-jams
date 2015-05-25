@@ -455,14 +455,13 @@ blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SelectAlbum', 
 }]);
 
 
-blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
+blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', 'TimeCodeFilter', function($scope, SongPlayer, TimeCodeFilter) {
   $scope.songPlayer = SongPlayer;
-  //$scope.playTime = TimeCodeFilter(NaN);
+  $scope.playTimeFiltered = TimeCodeFilter(NaN);
   
   SongPlayer.onTimeUpdate(function(event, time){
      $scope.$apply(function(){
-      //var timeFiltred = TimeCodeFilter(time);
-      //$scope.playTime = timeFiltred;
+      $scope.playTimeFiltered = TimeCodeFilter(time);
       $scope.playTime = time;
      });
    });
