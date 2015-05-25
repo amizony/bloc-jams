@@ -43,11 +43,11 @@ var albumPicasso = {
   albumArtUrl: '/images/album-placeholder.png',
 
   songs: [
-    { name: 'Blue', length: '4:26', audioUrl: '/music/placeholders/blue' },
-    { name: 'Green', length: '3:14', audioUrl: '/music/placeholders/green' },
-    { name: 'Red', length: '5:01', audioUrl: '/music/placeholders/red' },
-    { name: 'Pink', length: '3:21', audioUrl: '/music/placeholders/pink' },
-    { name: 'Magenta', length: '2:15', audioUrl: '/music/placeholders/magenta' }
+    { name: 'Blue', length: 163.38, audioUrl: '/music/placeholders/blue' },
+    { name: 'Green', length: 105.66, audioUrl: '/music/placeholders/green' },
+    { name: 'Red', length: 270.14, audioUrl: '/music/placeholders/red' },
+    { name: 'Pink', length: 154.81, audioUrl: '/music/placeholders/pink' },
+    { name: 'Magenta', length: 375.92, audioUrl: '/music/placeholders/magenta' }
   ]
 };
 var albumMarconi = {
@@ -57,11 +57,11 @@ var albumMarconi = {
   year: '1909',
   albumArtUrl: '/images/album-placeholder.png',
   songs: [
-  { name: 'Hello, Operator?', length: '4:26', audioUrl: '/music/placeholders/blue' },
-  { name: 'Ring, ring, ring', length: '3:14', audioUrl: '/music/placeholders/green' },
-  { name: 'Fits in your pocket', length: '5:01', audioUrl: '/music/placeholders/red' },
-  { name: 'Can you hear me now?', length: '3:21', audioUrl: '/music/placeholders/pink' },
-  { name: 'Wrong phone number', length: '2:15', audioUrl: '/music/placeholders/magenta' }
+  { name: 'Hello, Operator?', length: 163.38, audioUrl: '/music/placeholders/blue' },
+  { name: 'Ring, ring, ring', length: 105.66, audioUrl: '/music/placeholders/green' },
+  { name: 'Fits in your pocket', length: 270.14, audioUrl: '/music/placeholders/red' },
+  { name: 'Can you hear me now?', length: 154.81, audioUrl: '/music/placeholders/pink' },
+  { name: 'Wrong phone number', length: 375.92, audioUrl: '/music/placeholders/magenta' }
   ]
 };
 var albumTSFH = {
@@ -71,16 +71,16 @@ var albumTSFH = {
   year: '2011',
   albumArtUrl: '/images/album-placeholder.png',
   songs: [
-  { name: 'Aura', length: '4:26', audioUrl: '/music/placeholders/blue' },
-  { name: 'Starvation', length: '3:14', audioUrl: '/music/placeholders/green' },
-  { name: 'Dreammaker', length: '5:01', audioUrl: '/music/placeholders/red' },
-  { name: 'Hurt', length: '3:21', audioUrl: '/music/placeholders/pink' },
-  { name: 'Ocean Princess', length: '2:15', audioUrl: '/music/placeholders/magenta' },
-  { name: 'Gift of Life', length: '4:26', audioUrl: '/music/placeholders/blue' },
-  { name: 'Rada', length: '3:14', audioUrl: '/music/placeholders/green' },
-  { name: 'A Place In Heaven', length: '5:01', audioUrl: '/music/placeholders/red' },
-  { name: 'Merchant Prince', length: '3:21', audioUrl: '/music/placeholders/pink' },
-  { name: 'Promise', length: '2:15', audioUrl: '/music/placeholders/magenta' },
+  { name: 'Aura', length: 163.38, audioUrl: '/music/placeholders/blue' },
+  { name: 'Starvation', length: 105.66, audioUrl: '/music/placeholders/green' },
+  { name: 'Dreammaker', length: 270.14, audioUrl: '/music/placeholders/red' },
+  { name: 'Hurt', length: 154.81, audioUrl: '/music/placeholders/pink' },
+  { name: 'Ocean Princess', length: 375.92, audioUrl: '/music/placeholders/magenta' },
+  { name: 'Gift of Life', length: 163.38, audioUrl: '/music/placeholders/blue' },
+  { name: 'Rada', length: 105.66, audioUrl: '/music/placeholders/green' },
+  { name: 'A Place In Heaven', length: 270.14, audioUrl: '/music/placeholders/red' },
+  { name: 'Merchant Prince', length: 154.81, audioUrl: '/music/placeholders/pink' },
+  { name: 'Promise', length: 375.92, audioUrl: '/music/placeholders/magenta' },
   ]
 }
 
@@ -155,7 +155,6 @@ blocJams.service('SelectAlbum', function() {
 
 blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SelectAlbum', function($scope, SongPlayer, SelectAlbum) {
   $scope.SelectAlbum = SelectAlbum;
-  console.log(SelectAlbum.album);
   switch (SelectAlbum.album) {
     case 'The Colors':
       $scope.album = angular.copy(albumPicasso);
@@ -275,6 +274,11 @@ blocJams.service('SongPlayer', function() {
       if (!this.currentAlbum) {
         this.currentAlbum = album;
       }
+    },
+    seek: function(time) {
+      if(currentSoundFile) {
+        currentSoundFile.setTime(time);
+      }
     }
   };
 });
@@ -288,39 +292,67 @@ blocJams.directive('slider', ['$document', function($document){
      offsetXPercent = Math.max(0, offsetXPercent);
      offsetXPercent = Math.min(1, offsetXPercent);
      return offsetXPercent;
+  }
+
+  var numberFromValue = function(value, defaultValue) {
+    if (typeof value === 'number') {
+      return value;
+    }
+ 
+    if(typeof value === 'undefined') {
+      return defaultValue;
+    }
+ 
+    if(typeof value === 'string') {
+      return Number(value);
+    }
    }
+
   return {
     templateUrl: '/templates/directives/slider.html',
     replace: true,
     restrict: 'E',
-    scope: {},
+    scope: {
+      onChange: '&'
+    },
     link: function(scope, element, attributes) {
       scope.value = 0;
-      scope.max = 200;
+      scope.max = 100;
       var $seekBar = $(element);
 
+      attributes.$observe('value', function(newValue) {
+        scope.value = numberFromValue(newValue, 0);
+      });
+      attributes.$observe('max', function(newValue) {
+        scope.max = numberFromValue(newValue, 100) || 100;
+      });
+
       var percentString = function () {
-        var percent = Number(scope.value) / Number(scope.max) * 100;
+        var value = scope.value || 0;
+        var max = scope.max || 100;
+        percent = value / max * 100;
         return percent + "%";
-      }
+      };
 
       scope.fillStyle = function() {
         return {width: percentString()};
-      }
+      };
 
       scope.thumbStyle = function() {
         return {left: percentString()};
-      }
+      };
 
       scope.onClickSlider = function(event) {
         var percent = calculateSliderPercentFromMouseEvent($seekBar, event);
         scope.value = percent * scope.max;
-      }
+        notifyCallback(scope.value);
+      };
       scope.trackThumb = function() {
         $document.bind('mousemove.thumb', function(event){
           var percent = calculateSliderPercentFromMouseEvent($seekBar, event);
           scope.$apply(function(){
             scope.value = percent * scope.max;
+            notifyCallback(scope.value);
           });
         });
 
@@ -328,6 +360,11 @@ blocJams.directive('slider', ['$document', function($document){
           $document.unbind('mousemove.thumb');
           $document.unbind('mouseup.thumb');
         });
+      };
+      var notifyCallback = function(newValue) {
+        if (typeof scope.onChange === 'function') {
+          scope.onChange({niceValue: newValue});
+        }
       };
     }
   };
