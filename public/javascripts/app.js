@@ -469,6 +469,9 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
   
   // update playtime of current song
   SongPlayer.onTimeUpdate(function(event, time){
+    if (!SongPlayer.currentSong) {
+      time = NaN;
+    }
     $scope.$apply(function(){
       $scope.playTime = time;
     });
