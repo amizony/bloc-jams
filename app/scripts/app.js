@@ -25,10 +25,11 @@ blocJams.config(['$stateProvider', '$locationProvider', function($stateProvider,
   });
 
   $stateProvider.state('album', {
-    url: '/album',
+    url: '/album?name',
     templateUrl: '/templates/album.html',
     controller: 'Album.controller'
   });
+
 }]);
 
 
@@ -119,9 +120,8 @@ blocJams.controller('Landing.controller', ['$scope', function($scope) {
 }]);
 
 
-blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', 'SelectAlbum', function($scope, SongPlayer, SelectAlbum) {
+blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
 
-  $scope.SelectAlbum = SelectAlbum;
   $scope.albums = [];
 
   // populating the collection page with randoms albums
@@ -140,18 +140,14 @@ blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', 'SelectAlb
     SongPlayer.setSong(album, album.songs[0]);
   };
 
-  $scope.chooseAlbum = function(album) {
-    SelectAlbum.set(album.name);
-  }
-
 }]);
 
 
-blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SelectAlbum', function($scope, SongPlayer, SelectAlbum) {
+blocJams.controller('Album.controller', ['$scope', 'SongPlayer', '$stateParams', function($scope, SongPlayer, $stateParams) {
   
-  // displaying the selected album if we land here from the collection page
-  $scope.SelectAlbum = SelectAlbum;
-  switch (SelectAlbum.album) {
+  // displaying the right album
+  var al = $stateParams.name;
+  switch (al) {
     case 'The Colors':
       $scope.album = angular.copy(albumPicasso);
       break;
@@ -164,6 +160,8 @@ blocJams.controller('Album.controller', ['$scope', 'SongPlayer', 'SelectAlbum', 
     default:
       $scope.album = angular.copy(albumPicasso);
   };
+
+  // selecting the displayed album in song player if no current album or no current song
   SongPlayer.setAlbum($scope.album);
 
   // icon display in song table
@@ -224,17 +222,7 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
 
 
 // ------------------------------
-// Services
-
-blocJams.service('SelectAlbum', function() {
-  // passing the album name between the collection and the album page
-  return {
-    album: null,
-    set: function(albumName) {
-      this.album = albumName;
-    }
-  };
-});
+// Service
 
 blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
 
@@ -253,7 +241,7 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
 
     play: function() {
       if (!this.currentSong && this.currentAlbum) {
-        // when album selected but no song, start with the first
+        // when album selected but no song, start with the first song
         this.setSong(this.currentAlbum, this.currentAlbum.songs[0]);
       }
       if (this.currentSong) {
@@ -325,7 +313,8 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
       this.play();
     },
     setAlbum: function(album) {
-      if (!this.currentAlbum) {
+      // !this.currentAlbum -> !this.currentSong
+      if (!this.currentSong) {
         this.currentAlbum = album;
       }
     },
