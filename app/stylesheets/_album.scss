@@ -15,6 +15,10 @@ $odd-line:#2f1d57;
 .album-header-container {
   margin-top: 55px;
   margin-bottom: 40px;
+
+  img {
+    max-width: 100%;
+  }
 }
 
 .album-header-information {

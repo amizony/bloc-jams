@@ -20,6 +20,8 @@
 .album-header-container {
   margin-top: 55px;
   margin-bottom: 40px; }
+  .album-header-container img {
+    max-width: 100%; }
 
 .album-header-information {
   margin-top: 45px;

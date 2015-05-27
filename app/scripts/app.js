@@ -3,6 +3,11 @@
 //require('./album');
 //require('./profile');
 
+function shuffle(o){ // shuffle an array
+  for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+};
+
 blocJams = angular.module('BlocJams', ['ui.router']);
 
 
@@ -36,12 +41,25 @@ blocJams.config(['$stateProvider', '$locationProvider', function($stateProvider,
 // ------------------------------
 // Albums
 
+var albumArtUrls = [
+  '/images/album-placeholders/album-1.jpg',
+  '/images/album-placeholders/album-2.jpg',
+  '/images/album-placeholders/album-3.jpg',
+  '/images/album-placeholders/album-4.jpg',
+  '/images/album-placeholders/album-5.jpg',
+  '/images/album-placeholders/album-6.jpg',
+  '/images/album-placeholders/album-7.jpg',
+  '/images/album-placeholders/album-8.jpg',
+  '/images/album-placeholders/album-9.jpg'
+];
+shuffle(albumArtUrls);
+
 var albumPicasso = {
   name: 'The Colors',
   artist: 'Pablo Picasso',
   label: 'Cubism',
   year: '1881',
-  albumArtUrl: '/images/album-placeholder.png',
+  albumArtUrl: albumArtUrls[1],
   songs: [
     { name: 'Blue', length: 161.71, audioUrl: '/music/placeholders/blue' }, // length: 163.38
     { name: 'Green', length: 103.96, audioUrl: '/music/placeholders/green' }, // length: 105.66
@@ -55,7 +73,7 @@ var albumMarconi = {
   artist: 'Guglielmo Marconi',
   label: 'EM',
   year: '1909',
-  albumArtUrl: '/images/album-placeholder.png',
+  albumArtUrl: albumArtUrls[2],
   songs: [
   { name: 'Hello, Operator?', length: 161.71, audioUrl: '/music/placeholders/blue' },
   { name: 'Ring, ring, ring', length: 103.96, audioUrl: '/music/placeholders/green' },
@@ -69,7 +87,7 @@ var albumTSFH = {
   artist: 'Thomas J. Bergersen',
   label: 'Orchestral',
   year: '2011',
-  albumArtUrl: '/images/album-placeholder.png',
+  albumArtUrl: albumArtUrls[3],
   songs: [
   { name: 'Aura', length: 161.71, audioUrl: '/music/placeholders/blue' },
   { name: 'Starvation', length: 103.96, audioUrl: '/music/placeholders/green' },
@@ -82,7 +100,7 @@ var albumTSFH = {
   { name: 'Merchant Prince', length: 153.14, audioUrl: '/music/placeholders/pink' },
   { name: 'Promise', length: 374.22, audioUrl: '/music/placeholders/magenta' }
   ]
-}
+};
 
 
 // ------------------------------
@@ -90,25 +108,10 @@ var albumTSFH = {
 
 blocJams.controller('Landing.controller', ['$scope', function($scope) {
 
-  function shuffle(o){ // shuffle an array
-    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-      return o;
-  };
-
   $scope.title = 'Bloc Jams';
   $scope.subText = 'Turn the music up!';
 
-  $scope.albumURLs = [
-    '/images/album-placeholders/album-1.jpg',
-    '/images/album-placeholders/album-2.jpg',
-    '/images/album-placeholders/album-3.jpg',
-    '/images/album-placeholders/album-4.jpg',
-    '/images/album-placeholders/album-5.jpg',
-    '/images/album-placeholders/album-6.jpg',
-    '/images/album-placeholders/album-7.jpg',
-    '/images/album-placeholders/album-8.jpg',
-    '/images/album-placeholders/album-9.jpg'
-  ];
+  $scope.albumURLs = angular.copy(albumArtUrls);
 
   $scope.titleClicked = function() {
     shuffle($scope.albumURLs);
@@ -212,6 +215,9 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
   SongPlayer.onTimeUpdate(function(event, time){
     if (!SongPlayer.currentSong) {
       time = NaN;
+    } else if (time === SongPlayer.currentSong.length) {
+      // play automaticaly next song
+      SongPlayer.next();
     }
     $scope.$apply(function(){
       $scope.playTime = time;
