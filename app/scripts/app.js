@@ -35,6 +35,11 @@ blocJams.config(['$stateProvider', '$locationProvider', function($stateProvider,
     controller: 'Album.controller'
   });
 
+  $stateProvider.state('profile', {
+    url: '/profile',
+    templateUrl: '/templates/profile.html',
+    controller: 'Profile.controller'
+  });
 }]);
 
 
@@ -223,6 +228,11 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
       $scope.playTime = time;
     });
   });
+
+}]);
+
+
+blocJams.controller('Profile.controller', ['$scope', function($scope) {
 
 }]);
 
