@@ -206,7 +206,7 @@ blocJams.controller('Album.controller', ['$scope', 'SongPlayer', '$stateParams',
 blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
 
   $scope.songPlayer = SongPlayer;
-  
+
   // icon display for the volume
   $scope.volumeClass = function() {
     return {
@@ -215,7 +215,18 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
       'fa-volume-up': SongPlayer.volume > 70
     }
   };
-  
+
+  // mute/unmute volume on volume icon click
+  $scope.mute = function() {
+    if (SongPlayer.volume > 0) {
+      $scope.previousVolume = SongPlayer.volume;
+      SongPlayer.setVolume(0);
+    } else {
+      var newVolume = $scope.previousVolume || 50;
+      SongPlayer.setVolume(newVolume);
+    }
+  };
+
   // update playtime of current song
   SongPlayer.onTimeUpdate(function(event, time){
     if (!SongPlayer.currentSong) {
