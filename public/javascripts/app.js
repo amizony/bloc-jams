@@ -488,13 +488,14 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
   SongPlayer.onTimeUpdate(function(event, time){
     if (!SongPlayer.currentSong) {
       time = NaN;
-    } else if (time === SongPlayer.currentSong.length) {
-      // play automaticaly next song
-      SongPlayer.next();
     }
     $scope.$apply(function(){
       $scope.playTime = time;
     });
+  });
+
+  SongPlayer.onSongEnded(function(event){
+    SongPlayer.next();
   });
 
 }]);
@@ -550,8 +551,8 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
         if (currentTrackIndex >= this.currentAlbum.songs.length) {
           this.stop();
         } else {
-          this.currentSong = this.currentAlbum.songs[currentTrackIndex];
           var song = this.currentAlbum.songs[currentTrackIndex];
+          this.currentSong = song;
           this.setSong(this.currentAlbum, song);
         }
       }
@@ -563,9 +564,9 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
         currentTrackIndex--;
         if (currentTrackIndex < 0) {
           this.stop();
-        } else { 
-          this.currentSong = this.currentAlbum.songs[currentTrackIndex];
+        } else {
           var song = this.currentAlbum.songs[currentTrackIndex];
+          this.currentSong = song;
           this.setSong(this.currentAlbum, song);
         }
       }
@@ -589,6 +590,10 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
         preload: true
       });
       currentSoundFile.setVolume(this.volume);
+
+      currentSoundFile.bind('ended', function(e) {
+        $rootScope.$broadcast('sound:ended');
+      });
       
       currentSoundFile.bind('timeupdate', function(e){
         $rootScope.$broadcast('sound:timeupdate', this.getTime());
@@ -609,6 +614,9 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
     },
     onTimeUpdate: function(callback) {
       return $rootScope.$on('sound:timeupdate', callback);
+    },
+    onSongEnded: function(callback) {
+      return $rootScope.$on('sound:ended', callback);
     }
   };
 }]);
