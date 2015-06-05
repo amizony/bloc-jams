@@ -24,8 +24,11 @@ HTML5 single-page application built with [Brunch](http://brunch.io) and using:
 ## Quick start
 
 Install (if you don't have them):
-1. [Brunch](http://brunch.io): `npm install -g brunch`
-2. [Bower](http://bower.io): `npm install -g bower`
+
+1. [Brunch](http://brunch.io): `npm install -g brunch`.
+
+2. [Bower](http://bower.io): `npm install -g bower`.
+
 3. Brunch plugins and Bower dependencies: `npm install` & `bower install`.
 
 Run `npm start` to launch a local server you can then access on port 3000 of localhost.
