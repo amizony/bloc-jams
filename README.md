@@ -1,17 +1,31 @@
-# Brunch app
+# Music Player
 
-This is HTML5 application, built with [Brunch](http://brunch.io).
+A Music Player application built during my apprenticeship at [Bloc.io](https://www.bloc.io).
 
-## Getting started
-* Install (if you don't have them):
-    * [Node.js](http://nodejs.org): `brew install node` on OS X
-    * [Brunch](http://brunch.io): `npm install -g brunch`
-    * [Bower](http://bower.io): `npm install -g bower`
-    * Brunch plugins and Bower dependencies: `npm install & bower install`.
-* Run:
-    * `brunch watch --server` — watches the project with continuous rebuild. This will also launch HTTP server with [pushState](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history).
-    * `brunch build --production` — builds minified project for production
-* Learn:
-    * `public/` dir is fully auto-generated and served by HTTP server.  Write your code in `app/` dir.
-    * Place static files you want to be copied from `app/assets/` to `public/`.
-    * [Brunch site](http://brunch.io), [Chaplin site](http://chaplinjs.org)
+Demo is available on heroku at http://lit-oasis-7361.herokuapp.com/
+
+## Technologies
+
+HTML5 single-page application built with [Brunch](http://brunch.io) and using:
+* [Angularjs](https://angularjs.org/)
+* [Sass](http://sass-lang.com/)
+* [Bootstrap](http://getbootstrap.com/)
+* [Buzz](http://buzz.jaysalvat.com/)
+
+## Features
+
+* Single page application
+* Collection with multiple albums
+* One view for each album
+* Application playing music
+* Play bar overlay between views for music control
+* Functional sliders bars
+
+## Quick start
+
+Install (if you don't have them):
+1. [Brunch](http://brunch.io): `npm install -g brunch`
+2. [Bower](http://bower.io): `npm install -g bower`
+3. Brunch plugins and Bower dependencies: `npm install` & `bower install`.
+
+Run `npm start` to launch a local server you can then access on port 3000 of localhost.
