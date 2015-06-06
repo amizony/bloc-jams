@@ -29,6 +29,6 @@ Install (if you don't have them):
 
 2. [Bower](http://bower.io): `npm install -g bower`.
 
-3. Brunch plugins and Bower dependencies: `npm install` & `bower install`.
+3. Node and Bower dependencies: `npm install` & `bower install`.
 
 Run `npm start` to launch a local server you can then access on port 3000 of localhost.
