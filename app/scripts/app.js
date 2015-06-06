@@ -1,12 +1,16 @@
+// old jquery code no longer required
 //require('./landing');
 //require('./collection');
 //require('./album');
 //require('./profile');
 
-function shuffle(o){ // shuffle an array
-  for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+
+// shuffle an array
+function shuffle(o) {
+  for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 };
+
 
 blocJams = angular.module('BlocJams', ['ui.router']);
 
@@ -66,11 +70,11 @@ var albumPicasso = {
   year: '1881',
   albumArtUrl: albumArtUrls[1],
   songs: [
-    { name: 'Blue', length: 161.71, audioUrl: '/music/placeholders/blue' }, // length: 163.38
-    { name: 'Green', length: 103.96, audioUrl: '/music/placeholders/green' }, // length: 105.66
-    { name: 'Red', length: 268.45, audioUrl: '/music/placeholders/red' }, // length: 270.14
-    { name: 'Pink', length: 153.14, audioUrl: '/music/placeholders/pink' }, // length: 154.81
-    { name: 'Magenta', length: 374.22, audioUrl: '/music/placeholders/magenta' } // length: 375.92
+    { name: 'Blue', length: 161.71, audioUrl: '/music/placeholders/blue' },
+    { name: 'Green', length: 103.96, audioUrl: '/music/placeholders/green' },
+    { name: 'Red', length: 268.45, audioUrl: '/music/placeholders/red' },
+    { name: 'Pink', length: 153.14, audioUrl: '/music/placeholders/pink' },
+    { name: 'Magenta', length: 374.22, audioUrl: '/music/placeholders/magenta' }
   ]
 };
 var albumMarconi = {
@@ -144,7 +148,7 @@ blocJams.controller('Collection.controller', ['$scope', 'SongPlayer', function($
     }
   };
 
-  $scope.playAlbum = function(album){
+  $scope.playAlbum = function(album) {
     SongPlayer.setSong(album, album.songs[0]);
   };
 
@@ -228,16 +232,16 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
   };
 
   // update playtime of current song
-  SongPlayer.onTimeUpdate(function(event, time){
+  SongPlayer.onTimeUpdate(function(event, time) {
     if (!SongPlayer.currentSong) {
       time = NaN;
     }
-    $scope.$apply(function(){
+    $scope.$apply(function() {
       $scope.playTime = time;
     });
   });
 
-  SongPlayer.onSongEnded(function(event){
+  SongPlayer.onSongEnded(function(event) {
     SongPlayer.next();
   });
 
@@ -372,8 +376,8 @@ blocJams.directive('slider', ['$document', function($document){
 
   var calculateSliderPercentFromMouseEvent = function($slider, event) {
     // calculate the position of the mouse on the slider
-    var offsetX =  event.pageX - $slider.offset().left; // Distance from left
-    var sliderWidth = $slider.width(); // Width of slider
+    var offsetX =  event.pageX - $slider.offset().left;
+    var sliderWidth = $slider.width();
     var offsetXPercent = (offsetX  / sliderWidth);
     offsetXPercent = Math.max(0, offsetXPercent);
     offsetXPercent = Math.min(1, offsetXPercent);
