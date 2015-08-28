@@ -2,15 +2,18 @@
 
 A Music Player application built during my apprenticeship at [Bloc.io](https://www.bloc.io).
 
-Demo is available on heroku at http://lit-oasis-7361.herokuapp.com/
+Demo is available on Heroku: [Music-player](http://lit-oasis-7361.herokuapp.com/).
+
 
 ## Technologies
 
 HTML5 single-page application built with [Brunch](http://brunch.io) and using:
 * [Angularjs](https://angularjs.org/)
+* [Jquery](http://jquery.com/)
 * [Sass](http://sass-lang.com/)
 * [Bootstrap](http://getbootstrap.com/)
-* [Buzz](http://buzz.jaysalvat.com/)
+* [Buzz](http://buzz.jaysalvat.com/): an audio library
+
 
 ## Features
 
@@ -20,6 +23,7 @@ HTML5 single-page application built with [Brunch](http://brunch.io) and using:
 * Application playing music
 * Play bar overlay between views for music control
 * Functional sliders bars
+
 
 ## Quick start
 
